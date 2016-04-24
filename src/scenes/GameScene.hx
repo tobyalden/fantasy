@@ -1,6 +1,7 @@
 package scenes;
 
 import com.haxepunk.Scene;
+import entities.Level;
 import entities.Player;
 
 class GameScene extends Scene
@@ -13,7 +14,8 @@ class GameScene extends Scene
 
     public override function begin()
     {
-        add(new Player(30, 50));
+        add(new Level("maps/cave.tmx"));
+        add(new Player(50, 50));
     }
 
 }
