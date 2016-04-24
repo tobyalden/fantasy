@@ -1,15 +1,18 @@
 package entities;
 
+import flash.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Spritemap;
 
 class ActiveEntity extends Entity
 {
     private var sprite:Spritemap;
+    private var velocity:Point;
 
     public function new(x:Int, y:Int)
     {
         super(x, y);
+        velocity = new Point(0, 0);
     }
 
     public function finishInitializing()
@@ -21,5 +24,19 @@ class ActiveEntity extends Entity
     public override function update()
     {
         super.update();
+        unstuck();
+    }
+
+    private function unstuck()
+    {
+        while(collide('walls', x, y) != null)
+        {
+          moveBy(0, -10);
+        }
+    }
+
+    private function isOnGround()
+    {
+        return collide("walls", x, y + 1) != null;
     }
 }

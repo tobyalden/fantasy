@@ -29,12 +29,43 @@ class Player extends ActiveEntity
         super.update();
         if (Input.check(Key.LEFT))
         {
-            moveBy(-RUN_SPEED, 0, "walls");
+            velocity.x = -RUN_SPEED;
+            sprite.flipped = true;
         }
-        if (Input.check(Key.RIGHT))
+        else if (Input.check(Key.RIGHT))
         {
-            moveBy(RUN_SPEED, 0, "walls");
+            velocity.x = RUN_SPEED;
+            sprite.flipped = false;
         }
-        moveBy(0, GRAVITY, "walls");
+        else
+        {
+            velocity.x = 0;
+        }
+        velocity.y = GRAVITY;
+        moveBy(velocity.x, velocity.y, "walls");
+        animate();
+    }
+
+    private function animate()
+    {
+        if(!isOnGround())
+        {
+            if(velocity.y < 0)
+            {
+                sprite.play("jump");
+            }
+            else
+            {
+                sprite.play("fall");
+            }
+        }
+        else if(velocity.x != 0)
+        {
+            sprite.play("run");
+        }
+        else
+        {
+            sprite.play("idle");
+        }
     }
 }
