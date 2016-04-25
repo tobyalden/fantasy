@@ -12,6 +12,9 @@ class Main extends Engine
 		HXP.scene = new scenes.GameScene();
 	}
 
-	public static function main() { new Main(); }
+	public static function main()
+	{
+		new Main(640, 480, 60, true);
+	}
 
 }

@@ -1,8 +1,9 @@
 package scenes;
 
 import com.haxepunk.Scene;
-import entities.Level;
-import entities.Player;
+import com.haxepunk.Entity;
+import com.haxepunk.tmx.TmxMap;
+import entities.*;
 
 class GameScene extends Scene
 {
@@ -14,8 +15,17 @@ class GameScene extends Scene
 
     public override function begin()
     {
-        add(new Level("maps/cave.tmx"));
-        add(new Player(50, 50));
+        add(new Level("maps/castle.tmx"));
+        add(new Player(200, 400));
+        var map = TmxMap.loadFromFile("maps/castle.tmx");
+        /*var entities = new Array<Entity>();
+        for(entity in map.getObjectGroup("entities").objects)
+        {
+            if(entity.type == "fan")
+            {
+              entities.push(new Fan(entity.x, entity.y));
+            }
+        }*/
     }
 
 }
