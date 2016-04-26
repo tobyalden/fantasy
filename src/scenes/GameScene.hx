@@ -4,6 +4,7 @@ import com.haxepunk.Scene;
 import com.haxepunk.Entity;
 import com.haxepunk.tmx.TmxMap;
 import entities.*;
+import fantasyUtils.*;
 
 class GameScene extends Scene
 {
@@ -26,6 +27,12 @@ class GameScene extends Scene
               entities.push(new Fan(entity.x, entity.y));
             }
         }*/
+    }
+
+    public override function update()
+    {
+      super.update();
+      Timer.updateAll();
     }
 
 }
