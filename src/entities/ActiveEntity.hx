@@ -40,6 +40,11 @@ class ActiveEntity extends Entity
         return collide("walls", x, y + 1) != null;
     }
 
+    private function isOnCeiling()
+    {
+        return collide("walls", x, y - 1) != null;
+    }
+
     private function isOnWall()
     {
         return collide("walls", x - 1, y) != null || collide("walls", x + 1, y) != null;

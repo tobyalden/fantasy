@@ -92,6 +92,10 @@ class Player extends ActiveEntity
         }
         else
         {
+          if(isOnCeiling())
+          {
+            velocity.y = 0;
+          }
           velocity.y = Math.min(velocity.y + GRAVITY * HXP.elapsed, MAX_FALL_SPEED);
         }
 
@@ -113,7 +117,7 @@ class Player extends ActiveEntity
 
     private function animate()
     {
-        if(isOnWall())
+        if(isOnWall() && !isOnGround())
         {
           if(velocity.y == 0 || Input.check(Key.DOWN))
           {
