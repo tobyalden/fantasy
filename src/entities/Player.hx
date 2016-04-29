@@ -1,9 +1,11 @@
 package entities;
 
+import flash.system.System;
 import com.haxepunk.graphics.Spritemap;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.HXP;
+import com.haxepunk.Sfx;
 import fantasyUtils.*;
 
 class Player extends ActiveEntity
@@ -19,6 +21,10 @@ class Player extends ActiveEntity
     public static inline var WALL_JUMP_POWER = 0.29 * 1000 * 1;
     public static inline var JUMP_CANCEL_POWER = 0.08 * 1000;
 
+    private var sfx:Map<String,Sfx>;
+    private var wasOnGround:Bool;
+    private var wasOnWall:Bool;
+
     public function new(x:Int, y:Int)
     {
         super(x, y);
@@ -29,6 +35,14 @@ class Player extends ActiveEntity
         sprite.add("jump", [4]);
         sprite.add("climb", [5, 6, 7], 9);
         sprite.play("idle");
+        sfx = new Map<String,Sfx>();
+        sfx.set("jump", new Sfx("audio/jump2.wav"));
+        sfx.set("run", new Sfx("audio/run2.wav"));
+        sfx.set("land", new Sfx("audio/land2.wav"));
+        sfx.set("climb", new Sfx("audio/climb.wav"));
+        sfx.set("climbLand", new Sfx("audio/climbland.wav"));
+        sfx.set("climbJump", new Sfx("audio/climbjump.wav"));
+        wasOnGround = false;
         finishInitializing();
     }
 
@@ -71,6 +85,7 @@ class Player extends ActiveEntity
               var direction:Int = (isOnRightWall())? -1: 1;
               velocity.x = WALL_JUMP_POWER * direction;
               velocity.y = -WALL_JUMP_POWER;
+              sfx.get("climbJump").play();
             }
             else
             {
@@ -103,6 +118,7 @@ class Player extends ActiveEntity
         {
             velocity.y = -JUMP_POWER;
             velocity.x *= 1.2;
+            sfx.get("jump").play();
         }
         else if(Input.released(Key.UP))
         {
@@ -111,8 +127,19 @@ class Player extends ActiveEntity
             velocity.y = -JUMP_CANCEL_POWER;
           }
         }
+
+        if(Input.pressed(Key.ESCAPE))
+        {
+          System.exit(0);
+        }
+
+        wasOnGround = isOnGround();
+        wasOnWall = isOnWall();
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+
         animate();
+        playSfx();
+
     }
 
     private function animate()
@@ -143,5 +170,41 @@ class Player extends ActiveEntity
         {
             sprite.play("idle");
         }
+    }
+
+    private function playSfx()
+    {
+      if(!wasOnGround && isOnGround())
+      {
+        sfx.get("land").play();
+      }
+      else if(!wasOnWall && isOnWall() && !isOnGround())
+      {
+        sfx.get("climbLand").play();
+      }
+
+      if((Input.check(Key.LEFT) || Input.check(Key.RIGHT)) && isOnGround())
+      {
+        if(!sfx.get("run").playing)
+        {
+          sfx.get("run").loop();
+        }
+      }
+      else
+      {
+        sfx.get("run").stop();
+      }
+
+      if(Input.check(Key.UP) && isOnWall())
+      {
+        if(!sfx.get("climb").playing)
+        {
+          sfx.get("climb").loop();
+        }
+      }
+      else
+      {
+        sfx.get("climb").stop();
+      }
     }
 }

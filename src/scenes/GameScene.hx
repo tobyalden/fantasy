@@ -22,8 +22,9 @@ class GameScene extends Scene
         addGraphic(new Image("graphics/moss.png"));
         add(new Level("maps/castle.tmx"));
         addGraphic(new Image("graphics/greenery.png"));
-        add(new Player(230, 400));
         addGraphic(new Image("graphics/decoration.png"));
+        add(new Player(230, 400));
+        addGraphic(new Image("graphics/water.png"));
         var map = TmxMap.loadFromFile("maps/castle.tmx");
         /*var entities = new Array<Entity>();
         for(entity in map.getObjectGroup("entities").objects)
