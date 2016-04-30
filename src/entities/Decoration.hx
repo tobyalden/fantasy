@@ -12,6 +12,7 @@ class Decoration extends Entity
         super(x, y);
         this.sprite = sprite;
         graphic = sprite;
+        setHitboxTo(sprite);
     }
 
 }

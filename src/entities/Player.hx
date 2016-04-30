@@ -25,6 +25,9 @@ class Player extends ActiveEntity
     private var wasOnGround:Bool;
     private var wasOnWall:Bool;
 
+    private var isInWater:Bool;
+    private var wasInWater:Bool;
+
     public function new(x:Int, y:Int)
     {
         super(x, y);
@@ -41,15 +44,25 @@ class Player extends ActiveEntity
         sfx.set("run", new Sfx("audio/run2.wav"));
         sfx.set("land", new Sfx("audio/land2.wav"));
         sfx.set("climb", new Sfx("audio/climb.wav"));
-        sfx.set("climbLand", new Sfx("audio/climbland.wav"));
-        sfx.set("climbJump", new Sfx("audio/climbjump.wav"));
+        sfx.set("slide", new Sfx("audio/slide.wav"));
+        sfx.set("climbland", new Sfx("audio/climbland.wav"));
+        sfx.set("climbjump", new Sfx("audio/climbjump.wav"));
+        sfx.set("headbonk", new Sfx("audio/headbonk.wav"));
+        sfx.set("waterrun", new Sfx("audio/waterrun.wav"));
+        sfx.set("waterjump", new Sfx("audio/waterjump.wav"));
+        sfx.set("waterland", new Sfx("audio/waterland.wav"));
         wasOnGround = false;
+        wasOnWall = false;
+        isInWater = false;
+        wasInWater = false;
         finishInitializing();
     }
 
     public override function update()
     {
         super.update();
+
+        isInWater = collide('water', x, y) != null;
 
         if(Input.check(Key.LEFT))
         {
@@ -86,7 +99,7 @@ class Player extends ActiveEntity
               var direction:Int = (isOnRightWall())? -1: 1;
               velocity.x = WALL_JUMP_POWER * direction;
               velocity.y = -WALL_JUMP_POWER;
-              sfx.get("climbJump").play();
+              sfx.get("climbjump").play();
             }
             else
             {
@@ -108,9 +121,13 @@ class Player extends ActiveEntity
         }
         else
         {
-          if(isOnCeiling())
+          if(isOnCeiling() && !isOnWall())
           {
             velocity.y = 0;
+            if(!sfx.get("headbonk").playing)
+            {
+              sfx.get("headbonk").play();
+            }
           }
           velocity.y = Math.min(velocity.y + GRAVITY * HXP.elapsed, MAX_FALL_SPEED);
         }
@@ -119,7 +136,14 @@ class Player extends ActiveEntity
         {
             velocity.y = -JUMP_POWER;
             velocity.x *= 1.2;
-            sfx.get("jump").play();
+            if(isInWater)
+            {
+              sfx.get("waterjump").play();
+            }
+            else
+            {
+              sfx.get("jump").play();
+            }
         }
         else if(Input.released(Key.UP))
         {
@@ -141,6 +165,7 @@ class Player extends ActiveEntity
         animate();
         playSfx();
 
+        wasInWater = isInWater;
     }
 
     private function animate()
@@ -179,18 +204,31 @@ class Player extends ActiveEntity
 
     private function playSfx()
     {
-      if(!wasOnGround && isOnGround())
+      if(isInWater && !wasInWater)
       {
+        sfx.get("waterland").play();
+      }
+      if(!wasOnGround && isOnGround() && !isInWater)
+      {
+        // TODO: If I end up having more than two surface types, refactor into state-machine function
         sfx.get("land").play();
       }
       else if(!wasOnWall && isOnWall() && !isOnGround())
       {
-        sfx.get("climbLand").play();
+        sfx.get("climbland").play();
       }
 
       if((Input.check(Key.LEFT) || Input.check(Key.RIGHT)) && isOnGround())
       {
-        if(!sfx.get("run").playing)
+        if(isInWater)
+        {
+          sfx.get("run").stop();
+          if(!sfx.get("waterrun").playing)
+          {
+            sfx.get("waterrun").loop();
+          }
+        }
+        else if(!sfx.get("run").playing)
         {
           sfx.get("run").loop();
         }
@@ -198,18 +236,29 @@ class Player extends ActiveEntity
       else
       {
         sfx.get("run").stop();
+        sfx.get("waterrun").stop();
       }
 
       if(Input.check(Key.UP) && isOnWall())
       {
+        sfx.get("slide").stop();
         if(!sfx.get("climb").playing)
         {
           sfx.get("climb").loop();
         }
       }
+      else if(Input.check(Key.DOWN) && isOnWall() && !isOnGround())
+      {
+        sfx.get("climb").stop();
+        if(!sfx.get("slide").playing)
+        {
+          sfx.get("slide").loop();
+        }
+      }
       else
       {
         sfx.get("climb").stop();
+        sfx.get("slide").stop();
       }
     }
 

@@ -31,12 +31,16 @@ class GameScene extends Scene
         mist.sprite.play("splash");
         add(mist);
 
-        var waterfallsfx = new Sfx("audio/waterfall.wav");
+        var waterfallsfx = new Sfx("audio/waterfall2.wav");
         waterfallsfx.loop();
 
         addGraphic(new Image("graphics/decoration.png"));
         add(new Player(230, 400));
-        addGraphic(new Image("graphics/water.png"));
+
+        var water = new Decoration(0, 457, new Spritemap("graphics/water.png"));
+        water.type = 'water';
+        add(water);
+
         var map = TmxMap.loadFromFile("maps/castle.tmx");
         /*var entities = new Array<Entity>();
         for(entity in map.getObjectGroup("entities").objects)
