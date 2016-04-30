@@ -34,6 +34,7 @@ class Player extends ActiveEntity
         sprite.add("run", [1, 2, 3, 2], 10);
         sprite.add("jump", [4]);
         sprite.add("climb", [5, 6, 7], 9);
+        sprite.add("edge", [6]);
         sprite.play("idle");
         sfx = new Map<String,Sfx>();
         sfx.set("jump", new Sfx("audio/jump2.wav"));
@@ -144,6 +145,10 @@ class Player extends ActiveEntity
 
     private function animate()
     {
+        if(isOnEdge())
+        {
+          sprite.play("edge");
+        }
         if(isOnWall() && !isOnGround())
         {
           if(velocity.y == 0 || Input.check(Key.DOWN))
@@ -206,5 +211,21 @@ class Player extends ActiveEntity
       {
         sfx.get("climb").stop();
       }
+    }
+
+    private function isOnEdge()
+    {
+      if(isOnWall())
+      {
+        var tempY = y;
+        moveBy(0, -height/2, "walls");
+        if(!isOnWall())
+        {
+          y = tempY;
+          return true;
+        }
+        y = tempY;
+      }
+      return false;
     }
 }

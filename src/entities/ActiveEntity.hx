@@ -59,4 +59,5 @@ class ActiveEntity extends Entity
     {
         return collide("walls", x - 1, y) != null;
     }
+
 }
