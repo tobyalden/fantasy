@@ -11,7 +11,7 @@ class Level extends TmxEntity
     public function new(filename:String)
     {
         super(filename);
-        loadGraphic("graphics/tiles.png", ["main"]);
-        loadMask("main", "walls");
+        loadGraphic("graphics/tiles.png", ["solids"]);
+        loadMask("solids", "walls");
     }
 }
