@@ -2,10 +2,8 @@ package entities;
 
 import flash.system.System;
 import com.haxepunk.graphics.Spritemap;
-import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Key;
-import com.haxepunk.HXP;
-import com.haxepunk.Sfx;
+import com.haxepunk.utils.*;
+import com.haxepunk.*;
 import fantasyUtils.*;
 
 class Player extends ActiveEntity
@@ -30,6 +28,9 @@ class Player extends ActiveEntity
 
     public function new(x:Int, y:Int)
     {
+        Data.load('fantasy_save');
+        x = Data.read('saveX', 0);
+        y = Data.read('saveY', 0);
         super(x, y);
         setHitbox(12, 24, -6, 0);
         sprite = new Spritemap("graphics/player.png", 24, 24);
@@ -155,6 +156,9 @@ class Player extends ActiveEntity
 
         if(Input.pressed(Key.ESCAPE))
         {
+          Data.write("saveX", x);
+          Data.write("saveY", y);
+          Data.save('fantasy_save');
           System.exit(0);
         }
 
@@ -166,6 +170,9 @@ class Player extends ActiveEntity
         playSfx();
 
         wasInWater = isInWater;
+
+          HXP.camera.x = (Math.floor(centerX / HXP.width)) * HXP.width;
+          HXP.camera.y = (Math.floor(centerY / HXP.height)) * HXP.height;
     }
 
     private function animate()
