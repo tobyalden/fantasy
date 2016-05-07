@@ -171,8 +171,19 @@ class Player extends ActiveEntity
 
         wasInWater = isInWater;
 
-          HXP.camera.x = (Math.floor(centerX / HXP.width)) * HXP.width;
-          HXP.camera.y = (Math.floor(centerY / HXP.height)) * HXP.height;
+        HXP.camera.x = (Math.floor(centerX / HXP.width)) * HXP.width;
+        HXP.camera.y = (Math.floor(centerY / HXP.height)) * HXP.height;
+
+        debug();
+    }
+
+    private function debug()
+    {
+      if(Input.pressed(Key.R))
+      {
+        x = 800;
+        y = 160;
+      }
     }
 
     private function animate()
