@@ -2,6 +2,7 @@ package entities;
 
 import flash.geom.Point;
 import com.haxepunk.Entity;
+import com.haxepunk.HXP;
 import com.haxepunk.graphics.Spritemap;
 
 class ActiveEntity extends Entity
@@ -25,6 +26,11 @@ class ActiveEntity extends Entity
     {
         super.update();
         unstuck();
+    }
+
+    public function getPositionOnScreen()
+    {
+      return new Point(x % HXP.screen.width, y % HXP.screen.height);
     }
 
     private function unstuck()

@@ -124,7 +124,7 @@ class Player extends ActiveEntity
         {
           if(isOnCeiling() && !isOnWall())
           {
-            velocity.y = 0;
+            velocity.y = JUMP_CANCEL_POWER/5;
             if(!sfx.get("headbonk").playing)
             {
               sfx.get("headbonk").play();

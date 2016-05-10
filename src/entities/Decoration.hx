@@ -1,11 +1,12 @@
 package entities;
 
-import com.haxepunk.Entity;
+import com.haxepunk.*;
 import com.haxepunk.graphics.Spritemap;
 
 class Decoration extends Entity
 {
     public var sprite:Spritemap;
+    public var sfx:Sfx;
 
     public function new(x:Int, y:Int, sprite:Spritemap)
     {
