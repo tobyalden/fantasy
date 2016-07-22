@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="160" height="60" tilewidth="16" tileheight="16" nextobjectid="7">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="160" height="60" tilewidth="16" tileheight="16" nextobjectid="11">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="16" columns="4">
   <image source="../graphics/tiles.png" width="64" height="64"/>
  </tileset>
@@ -73,6 +73,10 @@
  <objectgroup name="decoration">
   <object id="4" name="water" type="water" x="1936" y="456" width="192" height="8"/>
   <object id="6" name="water" type="water" x="2352" y="456" width="192" height="8"/>
+  <object id="7" name="water" type="water" x="2496" y="729" width="48" height="6"/>
+  <object id="8" name="water" type="water" x="1456" y="936" width="64" height="8"/>
+  <object id="9" name="water" type="water" x="1632" y="936" width="64" height="8"/>
+  <object id="10" name="water" type="water" x="0" y="936" width="1152" height="8"/>
  </objectgroup>
  <layer name="guide" width="160" height="60" visible="0" opacity="0.34">
   <data encoding="csv">
