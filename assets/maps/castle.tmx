@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="160" height="60" tilewidth="16" tileheight="16" nextobjectid="11">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="160" height="60" tilewidth="16" tileheight="16" nextobjectid="12">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="16" columns="4">
   <image source="../graphics/tiles.png" width="64" height="64"/>
  </tileset>
@@ -70,13 +70,20 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup name="decoration">
+ <objectgroup name="entities">
   <object id="4" name="water" type="water" x="1936" y="456" width="192" height="8"/>
   <object id="6" name="water" type="water" x="2352" y="456" width="192" height="8"/>
   <object id="7" name="water" type="water" x="2496" y="729" width="48" height="6"/>
   <object id="8" name="water" type="water" x="1456" y="936" width="64" height="8"/>
   <object id="9" name="water" type="water" x="1632" y="936" width="64" height="8"/>
   <object id="10" name="water" type="water" x="0" y="936" width="1152" height="8"/>
+  <object id="11" name="waterfall" type="decoration" x="2384" y="96" width="50" height="300">
+   <properties>
+    <property name="fps" value="7"/>
+    <property name="isAnimated" value="true"/>
+    <property name="sequence" value="0,10,1,11,2,12,3,13,4,14,5,15,6,16,7,17,8,18,9,19"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="guide" width="160" height="60" visible="0" opacity="0.34">
   <data encoding="csv">
