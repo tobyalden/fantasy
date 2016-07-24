@@ -4,6 +4,7 @@ import flash.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.Spritemap;
+import entities.Level;
 
 class ActiveEntity extends Entity
 {

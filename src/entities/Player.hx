@@ -5,6 +5,7 @@ import com.haxepunk.graphics.Spritemap;
 import com.haxepunk.utils.*;
 import com.haxepunk.*;
 import fantasyUtils.*;
+import entities.Level;
 
 class Player extends ActiveEntity
 {
@@ -32,6 +33,7 @@ class Player extends ActiveEntity
         x = Data.read('saveX', 0);
         y = Data.read('saveY', 0);
         super(x, y);
+        layer = Level.MIDDLEGROUND;
         setHitbox(12, 24, -6, 0);
         sprite = new Spritemap("graphics/player.png", 24, 24);
         sprite.add("idle", [0]);

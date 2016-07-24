@@ -8,11 +8,19 @@ import com.haxepunk.graphics.Spritemap;
 class Level extends TmxEntity
 {
 
+    public static inline var FOREGROUND = 0;
+    public static inline var MIDDLEFOREGROUND = 25;
+    public static inline var MIDDLEGROUND = 50;
+    public static inline var MIDDLEBACKGROUND = 75;
+    public static inline var BACKGROUND = 100;
+    public static inline var DEBUG = 999;
+
     public var entities:Array<Entity>;
 
     public function new(filename:String)
     {
         super(filename);
+        layer = DEBUG;
         entities = new Array<Entity>();
         loadGraphic("graphics/tiles.png", ["solids"]);
         loadMask("solids", "walls");
@@ -45,8 +53,3 @@ class Level extends TmxEntity
         }
     }
 }
-
-/*var waterfall = new Decoration(2424, 158, new Spritemap("graphics/waterfall.png", 50, 300));
-  waterfall.sprite.add("cascade", [0, 10, 1, 11, 2, 12, 3, 13, 4,  14, 5, 15, 6, 16, 7, 17, 8, 18, 9, 19], 7);
-waterfall.sprite.play("cascade");
-add(waterfall);*/

@@ -18,7 +18,7 @@ class GameScene extends Scene
     {
         var level:Level = new Level("maps/castle.tmx");
         add(level);
-        addGraphic(new Image("graphics/background_all.png"));
+        addGraphic(new Image("graphics/background_all.png"), Level.BACKGROUND);
 
         /*var waterfall = new Decoration(2424, 158, new Spritemap("graphics/waterfall.png", 50, 300));
           waterfall.sprite.add("cascade", [0, 10, 1, 11, 2, 12, 3, 13, 4,  14, 5, 15, 6, 16, 7, 17, 8, 18, 9, 19], 7);
