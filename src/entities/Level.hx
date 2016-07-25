@@ -13,7 +13,7 @@ class Level extends TmxEntity
     public static inline var MIDDLEGROUND = 50;
     public static inline var MIDDLEBACKGROUND = 75;
     public static inline var BACKGROUND = 100;
-    public static inline var DEBUG = 999;
+    public static inline var DEBUG = -999;
 
     public var entities:Array<Entity>;
 
@@ -27,7 +27,10 @@ class Level extends TmxEntity
         map = TmxMap.loadFromFile(filename);
         for(entity in map.getObjectGroup("entities").objects)
         {
-            if(entity.type == "decoration") {
+            if(entity.type == "player") {
+              entities.push(new Player(entity.x, entity.y));
+            }
+            else if(entity.type == "decoration") {
               if(entity.custom.resolve("isAnimated") == "true") {
                 var decoration:Decoration = new Decoration(
                   entity.x,

@@ -27,8 +27,13 @@ class Player extends ActiveEntity
     private var isInWater:Bool;
     private var wasInWater:Bool;
 
+    private var startX:Int;
+    private var startY:Int;
+
     public function new(x:Int, y:Int)
     {
+        startX = x;
+        startY = y;
         Data.load('fantasy_save');
         x = Data.read('saveX', 0);
         y = Data.read('saveY', 0);
@@ -183,8 +188,8 @@ class Player extends ActiveEntity
     {
       if(Input.pressed(Key.R))
       {
-        x = 800;
-        y = 160;
+        x = startX;
+        y = startY;
       }
     }
 
