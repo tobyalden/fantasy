@@ -17,6 +17,17 @@ class ActiveEntity extends Entity
         velocity = new Point(0, 0);
     }
 
+    public function getScreenCoordinates() {
+      return new Point(
+        Math.floor(x / HXP.screen.width),
+        Math.floor(y / HXP.screen.height)
+      );
+    }
+
+    public function getScreenX() {
+
+    }
+
     public function finishInitializing()
     {
         sprite.smooth = false;

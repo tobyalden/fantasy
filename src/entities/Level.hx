@@ -1,9 +1,8 @@
 package entities;
 
-import com.haxepunk.tmx.TmxEntity;
-import com.haxepunk.tmx.TmxMap;
-import com.haxepunk.Entity;
-import com.haxepunk.graphics.Spritemap;
+import com.haxepunk.tmx.*;
+import com.haxepunk.*;
+import com.haxepunk.graphics.*;
 
 class Level extends TmxEntity
 {
@@ -13,7 +12,7 @@ class Level extends TmxEntity
     public static inline var MIDDLEGROUND = 50;
     public static inline var MIDDLEBACKGROUND = 75;
     public static inline var BACKGROUND = 100;
-    public static inline var DEBUG = -999;
+    public static inline var DEBUG = 999;
 
     public var entities:Array<Entity>;
 
@@ -37,6 +36,9 @@ class Level extends TmxEntity
                   entity.y,
                   new Spritemap("graphics/" + entity.name +  ".png", entity.width, entity.height)
                 );
+                if(entity.custom.resolve("sfx") != null) {
+                  decoration.setSfx(entity.custom.resolve("sfx"));
+                }
                 entities.push(decoration);
                 var stringSequence:Array<String> = entity.custom.resolve("sequence").split(",");
                 var intSequence:Array<Int> = new Array<Int>();

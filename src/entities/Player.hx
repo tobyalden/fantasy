@@ -38,6 +38,7 @@ class Player extends ActiveEntity
         x = Data.read('saveX', 0);
         y = Data.read('saveY', 0);
         super(x, y);
+        name = "player";
         layer = Level.MIDDLEGROUND;
         setHitbox(12, 24, -6, 0);
         sprite = new Spritemap("graphics/player.png", 24, 24);
