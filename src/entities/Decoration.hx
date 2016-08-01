@@ -13,8 +13,8 @@ class Decoration extends Entity
     private var sfxFadeOutTimer:Timer;
     private var sfxFadeInTimer:Timer;
 
-    public static inline var FADE_OUT_TIME = 300;
-    public static inline var FADE_IN_TIME = 300;
+    public static inline var FADE_OUT_TIME = 200;
+    public static inline var FADE_IN_TIME = 80;
 
     public function new(x:Int, y:Int, sprite:Spritemap)
     {
@@ -47,10 +47,11 @@ class Decoration extends Entity
 
     public function updateSfx() {
       var player:Player = cast(HXP.scene.getInstance("player"), Player);
-      if(
+      var onSameScreen = (
         player.getScreenCoordinates().x == getScreenCoordinates().x &&
         player.getScreenCoordinates().y == getScreenCoordinates().y
-      ) {
+      );
+      if(onSameScreen || collideWith(player, x, y) != null) {
         if(sfxFadeInTimer.isActive()) {
           sfxFadeOutTimer.count = Math.floor((1 - sfxFadeInTimer.percentComplete()) * sfxFadeOutTimer.duration);
         }
