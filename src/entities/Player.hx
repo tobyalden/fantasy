@@ -192,6 +192,22 @@ class Player extends ActiveEntity
         x = startX;
         y = startY;
       }
+      if(Input.pressed(Key.W))
+      {
+        y -= HXP.screen.height;
+      }
+      if(Input.pressed(Key.A))
+      {
+        x -= HXP.screen.width;
+      }
+      if(Input.pressed(Key.S))
+      {
+        y += HXP.screen.height;
+      }
+      if(Input.pressed(Key.D))
+      {
+        x += HXP.screen.width;
+      }
     }
 
     private function animate()
@@ -202,16 +218,16 @@ class Player extends ActiveEntity
         }
         if(isOnWall() && !isOnGround())
         {
-          if(velocity.y == 0 || Input.check(Key.DOWN))
+          if(Input.check(Key.UP))
           {
-            if(sprite.currentAnim == "climb")
-            {
-              sprite.stop();
-            }
+            sprite.play("climb");
           }
           else
           {
-            sprite.play("climb");
+            if(sprite.currentAnim != "climb") {
+              sprite.play("climb");
+            }
+              sprite.stop();
           }
         }
         else if(!isOnGround())
