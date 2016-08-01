@@ -5,8 +5,8 @@ class Timer
 
   static var allTimers:Array<Timer> = new Array<Timer>();
 
-  private var count:Int;
-  private var duration:Int;
+  public var count:Int;
+  public var duration:Int;
 
   public function new(duration:Int)
   {
@@ -18,6 +18,10 @@ class Timer
   public function restart()
   {
     count = duration;
+  }
+
+  public function percentComplete() {
+    return count / duration;
   }
 
   public function isActive()

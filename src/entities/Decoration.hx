@@ -4,11 +4,17 @@ import flash.geom.Point;
 import com.haxepunk.*;
 import com.haxepunk.graphics.Spritemap;
 import entities.Level;
+import fantasyUtils.*;
 
 class Decoration extends Entity
 {
     public var sprite:Spritemap;
     private var sfx:Sfx;
+    private var sfxFadeOutTimer:Timer;
+    private var sfxFadeInTimer:Timer;
+
+    public static inline var FADE_OUT_TIME = 300;
+    public static inline var FADE_IN_TIME = 300;
 
     public function new(x:Int, y:Int, sprite:Spritemap)
     {
@@ -16,6 +22,8 @@ class Decoration extends Entity
         layer = Level.MIDDLEBACKGROUND;
         this.sprite = sprite;
         sfx = null;
+        sfxFadeOutTimer = null;
+        sfxFadeInTimer = null;
         graphic = sprite;
         setHitboxTo(sprite);
     }
@@ -28,25 +36,38 @@ class Decoration extends Entity
         }
     }
 
+    public function setSfx(sfxName:String)
+    {
+      sfx = new Sfx("audio/" + sfxName + ".wav");
+      sfx.loop();
+      sfxFadeOutTimer = new Timer(FADE_OUT_TIME);
+      sfxFadeInTimer = new Timer(FADE_IN_TIME);
+    }
+
+
     public function updateSfx() {
       var player:Player = cast(HXP.scene.getInstance("player"), Player);
       if(
         player.getScreenCoordinates().x == getScreenCoordinates().x &&
         player.getScreenCoordinates().y == getScreenCoordinates().y
       ) {
-        if(!sfx.playing) {
-          sfx.resume();
+        if(sfxFadeInTimer.isActive()) {
+          sfxFadeOutTimer.count = Math.floor((1 - sfxFadeInTimer.percentComplete()) * sfxFadeOutTimer.duration);
         }
+        else {
+          sfxFadeOutTimer.restart();
+        }
+        sfx.volume = 1 - sfxFadeInTimer.percentComplete();
       }
       else {
-        sfx.stop();
+        if(sfxFadeOutTimer.isActive()) {
+          sfxFadeInTimer.count = Math.floor((1 - sfxFadeOutTimer.percentComplete()) * sfxFadeInTimer.duration);
+        }
+        else {
+          sfxFadeInTimer.restart();
+        }
+        sfx.volume = sfxFadeOutTimer.percentComplete();
       }
-    }
-
-    public function setSfx(sfxName:String)
-    {
-      sfx = new Sfx("audio/" + sfxName + ".wav");
-      sfx.loop();
     }
 
     public function getScreenCoordinates() {
