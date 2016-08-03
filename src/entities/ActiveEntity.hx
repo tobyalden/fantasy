@@ -24,10 +24,6 @@ class ActiveEntity extends Entity
       );
     }
 
-    public function getScreenX() {
-
-    }
-
     public function finishInitializing()
     {
         sprite.smooth = false;
