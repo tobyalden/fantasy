@@ -12,7 +12,7 @@ class Level extends TmxEntity
     public static inline var MIDDLEGROUND = 50;
     public static inline var MIDDLEBACKGROUND = 75;
     public static inline var BACKGROUND = 100;
-    public static inline var DEBUG = 999;
+    public static inline var DEBUG = -999;
 
     public var entities:Array<Entity>;
 
