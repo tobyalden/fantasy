@@ -13,7 +13,7 @@ class Player extends ActiveEntity
     public static inline var MAX_RUN_SPEED = 0.17 * 1000;
     public static inline var AIR_STOP_SPEED = 0.18 * 10000;
     public static inline var CLIMB_UP_SPEED = 0.14 * 1000;
-    public static inline var SLIDE_DOWN_SPEED = 0.14 * 1000 * 1.1;
+    public static inline var SLIDE_DOWN_SPEED = 0.14 * 1000 * 1.1 * 1.1;
     public static inline var GRAVITY = 0.00067 * 1000 * 1000 * 1.21;
     public static inline var MAX_FALL_SPEED = 0.28 * 1000 * 1.8;
     public static inline var JUMP_POWER = 0.29 * 1000 * 1.1;
