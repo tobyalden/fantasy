@@ -21,8 +21,8 @@ class Level extends TmxEntity
         super(filename);
         layer = DEBUG;
         entities = new Array<Entity>();
-        loadGraphic("graphics/tiles.png", ["solids"]);
         loadMask("solids", "walls");
+        loadGraphic("graphics/tiles.png", ["solids"]);
         map = TmxMap.loadFromFile(filename);
         for(entity in map.getObjectGroup("entities").objects)
         {
