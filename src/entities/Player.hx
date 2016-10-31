@@ -69,6 +69,7 @@ class Player extends ActiveEntity
         sfx.set("waterrun", new Sfx("audio/waterrun.wav"));
         sfx.set("waterjump", new Sfx("audio/waterjump.wav"));
         sfx.set("waterland", new Sfx("audio/waterland.wav"));
+        sfx.set("hoverboard", new Sfx("audio/hoverboard.wav"));
         wasOnGround = false;
         wasOnWall = false;
         isInWater = false;
@@ -123,6 +124,7 @@ class Player extends ActiveEntity
       if(Input.pressed(Key.X))
       {
         isHoverboarding = !isHoverboarding;
+        stopAllSfx();
       }
       if(isHoverboarding) {
         hoverboardMovement();
@@ -415,7 +417,36 @@ class Player extends ActiveEntity
     }
 
     private function playHoverboardSfx() {
+      var floor = collide("walls", x, y + HOVER_HEIGHT);
+      if(floor == null) {
+        var farFloor = collide("walls", x, y + HOVER_HEIGHT * 2);
+        if(farFloor != null) {
+          sfx.get("hoverboard").volume = 0.5;
+        }
+        else {
+          sfx.get("hoverboard").stop();
+        }
+      }
+      else {
+        if(!sfx.get("hoverboard").playing) {
+          sfx.get("hoverboard").volume = 0.75;
+          sfx.get("hoverboard").loop();
+        }
+        if(isInWater) {
+          if(!sfx.get("waterrun").playing) {
+            sfx.get("waterrun").loop();
+          }
+        }
+        else {
+          sfx.get("waterrun").stop();
+        }
+      }
+    }
 
+    private function stopAllSfx() {
+      for(_sfx in sfx) {
+        _sfx.stop();
+      }
     }
 
     private function isOnEdge()
