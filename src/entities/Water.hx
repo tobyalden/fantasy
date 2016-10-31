@@ -12,8 +12,7 @@ class Water extends Entity
         super(x, y);
         layer = Level.FOREGROUND;
         graphic = new TiledImage("graphics/water.png", width, height);
-        this.width = width;
-        this.height = height;
+        setHitbox(width, height);
         type = "water";
     }
 }

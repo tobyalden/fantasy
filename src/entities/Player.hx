@@ -23,6 +23,8 @@ class Player extends ActiveEntity
     public static inline var HOVERBOARD_SPEED  = 0.027 * 1000 * 0.32;
     public static inline var MAX_HOVERBOARD_SPEED = 0.27 * 1000;
     public static inline var HOVERBOARD_JUMP_POWER = 0.32 * 1000 * 1.1;
+    public static inline var HOVER_HEIGHT = 10;
+    public static inline var HOVER_POWER = 0.00067 * 1000 * 1000 * 1 / 5;
 
     private var sfx:Map<String,Sfx>;
     private var wasOnGround:Bool;
@@ -101,7 +103,12 @@ class Player extends ActiveEntity
         }
 
         animate();
-        playSfx();
+        if(isHoverboarding) {
+          playHoverboardSfx();
+        }
+        else {
+          playSfx();
+        }
 
         wasInWater = isInWater;
 
@@ -231,6 +238,8 @@ class Player extends ActiveEntity
     }
 
     private function hoverboardMovement() {
+      var isJustAboveGround:Bool = collide("walls", x, y + HOVER_HEIGHT) != null;
+      var isAboveGround:Bool = collide("walls", x, y + HOVER_HEIGHT*2) != null;
       if(isOnWall()) {
         velocity.x = 0;
       }
@@ -246,21 +255,24 @@ class Player extends ActiveEntity
       }
       if(isOnCeiling())
       {
-        velocity.y = JUMP_CANCEL_POWER/5;
+        velocity.y += JUMP_CANCEL_POWER;
         if(!sfx.get("headbonk").playing)
         {
           sfx.get("headbonk").play();
         }
       }
       if(isOnGround()) {
-        velocity.y = 0;
+        velocity.y = -HOVER_POWER * 20 * HXP.elapsed;
+      }
+      else if(isInWater || isJustAboveGround) {
+        velocity.y = velocity.y - HOVER_POWER * HXP.elapsed;
       }
       else {
         velocity.y = Math.min(velocity.y + GRAVITY * HXP.elapsed, MAX_FALL_SPEED);
       }
-      if(Input.pressed(Key.UP) && isOnGround())
+      if(Input.pressed(Key.UP) && (isOnGround() || isAboveGround))
       {
-          velocity.y = -HOVERBOARD_JUMP_POWER;
+          velocity.y = velocity.y/2 - HOVERBOARD_JUMP_POWER;
           velocity.x *= 1.2;
           if(isInWater)
           {
@@ -400,6 +412,10 @@ class Player extends ActiveEntity
         sfx.get("climb").stop();
         sfx.get("slide").stop();
       }
+    }
+
+    private function playHoverboardSfx() {
+
     }
 
     private function isOnEdge()
