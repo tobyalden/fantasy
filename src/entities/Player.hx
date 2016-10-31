@@ -20,12 +20,18 @@ class Player extends ActiveEntity
     public static inline var WALL_JUMP_POWER = 0.29 * 1000 * 1;
     public static inline var JUMP_CANCEL_POWER = 0.08 * 1000;
 
+    public static inline var HOVERBOARD_SPEED  = 0.027 * 1000 * 0.32;
+    public static inline var MAX_HOVERBOARD_SPEED = 0.27 * 1000;
+    public static inline var HOVERBOARD_JUMP_POWER = 0.32 * 1000 * 1.1;
+
     private var sfx:Map<String,Sfx>;
     private var wasOnGround:Bool;
     private var wasOnWall:Bool;
 
     private var isInWater:Bool;
     private var wasInWater:Bool;
+
+    private var isHoverboarding:Bool;
 
     private var startX:Int;
     private var startY:Int;
@@ -47,6 +53,7 @@ class Player extends ActiveEntity
         sprite.add("jump", [4]);
         sprite.add("climb", [5, 6, 7], 9);
         sprite.add("edge", [6]);
+        sprite.add("hoverboard", [10, 11, 12], 9);
         sprite.play("idle");
         sfx = new Map<String,Sfx>();
         sfx.set("jump", new Sfx("audio/jump2.wav"));
@@ -64,6 +71,7 @@ class Player extends ActiveEntity
         wasOnWall = false;
         isInWater = false;
         wasInWater = false;
+        isHoverboarding = false;
         finishInitializing();
     }
 
@@ -73,94 +81,7 @@ class Player extends ActiveEntity
 
         isInWater = collide('water', x, y) != null;
 
-        if(Input.check(Key.LEFT))
-        {
-          velocity.x = Math.max(velocity.x - RUN_SPEED, -MAX_RUN_SPEED);
-          sprite.flipped = true;
-        }
-        else if(Input.check(Key.RIGHT))
-        {
-          velocity.x = Math.min(velocity.x + RUN_SPEED, MAX_RUN_SPEED);
-          sprite.flipped = false;
-        }
-        else
-        {
-            if(isOnGround())
-            {
-              velocity.x = 0;
-            }
-            else if(velocity.x > 0)
-            {
-              velocity.x = Math.max(velocity.x - AIR_STOP_SPEED * HXP.elapsed, 0);
-            }
-            else
-            {
-              velocity.x = Math.min(velocity.x + AIR_STOP_SPEED * HXP.elapsed, 0);
-            }
-        }
-
-        if(isOnWall())
-        {
-          if(Input.check(Key.UP))
-          {
-            if(Input.check(Key.LEFT) && isOnRightWall() || Input.check(Key.RIGHT) && isOnLeftWall())
-            {
-              var direction:Int = (isOnRightWall())? -1: 1;
-              velocity.x = WALL_JUMP_POWER * direction;
-              velocity.y = -WALL_JUMP_POWER;
-              sfx.get("climbjump").play();
-            }
-            else
-            {
-              velocity.y = -CLIMB_UP_SPEED;
-            }
-          }
-          else if(Input.check(Key.DOWN))
-          {
-            velocity.y = SLIDE_DOWN_SPEED;
-          }
-          else
-          {
-            velocity.y = 0;
-          }
-        }
-        else if(isOnGround())
-        {
-          velocity.y = 0;
-        }
-        else
-        {
-          if(isOnCeiling() && !isOnWall())
-          {
-            velocity.y = JUMP_CANCEL_POWER/5;
-            if(!sfx.get("headbonk").playing)
-            {
-              sfx.get("headbonk").play();
-            }
-          }
-          velocity.y = Math.min(velocity.y + GRAVITY * HXP.elapsed, MAX_FALL_SPEED);
-        }
-
-        if(Input.pressed(Key.UP) && isOnGround())
-        {
-            velocity.y = -JUMP_POWER;
-            velocity.x *= 1.2;
-            if(isInWater)
-            {
-              sfx.get("waterjump").play();
-            }
-            else
-            {
-              sfx.get("jump").play();
-            }
-        }
-        else if(Input.released(Key.UP))
-        {
-          if(velocity.y < -JUMP_CANCEL_POWER)
-          {
-            velocity.y = -JUMP_CANCEL_POWER;
-          }
-        }
+        movement();
 
         if(Input.pressed(Key.ESCAPE))
         {
@@ -172,7 +93,12 @@ class Player extends ActiveEntity
 
         wasOnGround = isOnGround();
         wasOnWall = isOnWall();
-        moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+        if(isHoverboarding) {
+            moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+        }
+        else {
+          moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
+        }
 
         animate();
         playSfx();
@@ -183,6 +109,175 @@ class Player extends ActiveEntity
         HXP.camera.y = (Math.floor(centerY / HXP.height)) * HXP.height;
 
         debug();
+    }
+
+    private function movement()
+    {
+      if(Input.pressed(Key.X))
+      {
+        isHoverboarding = !isHoverboarding;
+      }
+      if(isHoverboarding) {
+        hoverboardMovement();
+      }
+      else {
+        runMovement();
+      }
+    }
+
+    private function runMovement() {
+      if(Input.check(Key.LEFT))
+      {
+        if(!isOnGround() && velocity.x == -MAX_HOVERBOARD_SPEED) {
+          velocity.x = Math.max(velocity.x - RUN_SPEED, -MAX_HOVERBOARD_SPEED);
+        }
+        else {
+          velocity.x = Math.max(velocity.x - RUN_SPEED, -MAX_RUN_SPEED);
+        }
+        sprite.flipped = true;
+      }
+      else if(Input.check(Key.RIGHT))
+      {
+        if(!isOnGround() && velocity.x == MAX_HOVERBOARD_SPEED) {
+          velocity.x = Math.min(velocity.x + RUN_SPEED, MAX_HOVERBOARD_SPEED);
+        }
+        else {
+          velocity.x = Math.min(velocity.x + RUN_SPEED, MAX_RUN_SPEED);
+        }
+        sprite.flipped = false;
+      }
+      else
+      {
+          if(isOnGround())
+          {
+            velocity.x = 0;
+          }
+          else if(velocity.x > 0)
+          {
+            velocity.x = Math.max(velocity.x - AIR_STOP_SPEED * HXP.elapsed, 0);
+          }
+          else
+          {
+            velocity.x = Math.min(velocity.x + AIR_STOP_SPEED * HXP.elapsed, 0);
+          }
+      }
+
+      if(isOnWall())
+      {
+        if(!Input.check(Key.LEFT) && isOnRightWall() || !Input.check(Key.RIGHT) && isOnLeftWall()) {
+          velocity.x = 0;
+        }
+
+        if(Input.check(Key.UP))
+        {
+          if(Input.check(Key.LEFT) && isOnRightWall() || Input.check(Key.RIGHT) && isOnLeftWall())
+          {
+            var direction:Int = (isOnRightWall())? -1: 1;
+            velocity.x = WALL_JUMP_POWER * direction;
+            velocity.y = -WALL_JUMP_POWER;
+            sfx.get("climbjump").play();
+          }
+          else
+          {
+            velocity.y = -CLIMB_UP_SPEED;
+          }
+        }
+        else if(Input.check(Key.DOWN))
+        {
+          velocity.y = SLIDE_DOWN_SPEED;
+        }
+        else
+        {
+          velocity.y = 0;
+        }
+      }
+      else if(isOnGround())
+      {
+        velocity.y = 0;
+      }
+      else
+      {
+        if(isOnCeiling() && !isOnWall())
+        {
+          velocity.y = JUMP_CANCEL_POWER/5;
+          if(!sfx.get("headbonk").playing)
+          {
+            sfx.get("headbonk").play();
+          }
+        }
+        velocity.y = Math.min(velocity.y + GRAVITY * HXP.elapsed, MAX_FALL_SPEED);
+      }
+
+      if(Input.pressed(Key.UP) && isOnGround())
+      {
+          velocity.y = -JUMP_POWER;
+          velocity.x *= 1.2;
+          if(isInWater)
+          {
+            sfx.get("waterjump").play();
+          }
+          else
+          {
+            sfx.get("jump").play();
+          }
+      }
+      else if(Input.released(Key.UP))
+      {
+        if(velocity.y < -JUMP_CANCEL_POWER)
+        {
+          velocity.y = -JUMP_CANCEL_POWER;
+        }
+      }
+    }
+
+    private function hoverboardMovement() {
+      if(isOnWall()) {
+        velocity.x = 0;
+      }
+      if(Input.check(Key.LEFT))
+      {
+        velocity.x = Math.max(velocity.x - HOVERBOARD_SPEED, -MAX_HOVERBOARD_SPEED);
+        sprite.flipped = true;
+      }
+      else if(Input.check(Key.RIGHT))
+      {
+        velocity.x = Math.min(velocity.x + HOVERBOARD_SPEED, MAX_HOVERBOARD_SPEED);
+        sprite.flipped = false;
+      }
+      if(isOnCeiling())
+      {
+        velocity.y = JUMP_CANCEL_POWER/5;
+        if(!sfx.get("headbonk").playing)
+        {
+          sfx.get("headbonk").play();
+        }
+      }
+      if(isOnGround()) {
+        velocity.y = 0;
+      }
+      else {
+        velocity.y = Math.min(velocity.y + GRAVITY * HXP.elapsed, MAX_FALL_SPEED);
+      }
+      if(Input.pressed(Key.UP) && isOnGround())
+      {
+          velocity.y = -HOVERBOARD_JUMP_POWER;
+          velocity.x *= 1.2;
+          if(isInWater)
+          {
+            sfx.get("waterjump").play();
+          }
+          else
+          {
+            sfx.get("jump").play();
+          }
+      }
+      else if(Input.released(Key.UP))
+      {
+        if(velocity.y < -JUMP_CANCEL_POWER)
+        {
+          velocity.y = -JUMP_CANCEL_POWER;
+        }
+      }
     }
 
     private function debug()
@@ -212,11 +307,14 @@ class Player extends ActiveEntity
 
     private function animate()
     {
-        if(isOnEdge())
+        if(isHoverboarding) {
+          sprite.play("hoverboard");
+        }
+        else if(isOnEdge())
         {
           sprite.play("edge");
         }
-        if(isOnWall() && !isOnGround())
+        else if(isOnWall() && !isOnGround())
         {
           if(Input.check(Key.UP))
           {
