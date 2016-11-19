@@ -255,6 +255,14 @@ class Player extends ActiveEntity
         velocity.x = Math.min(velocity.x + HOVERBOARD_SPEED, MAX_HOVERBOARD_SPEED);
         sprite.flipped = false;
       }
+      else {
+        if(velocity.x > MAX_HOVERBOARD_SPEED) {
+          velocity.x -= HOVERBOARD_SPEED/2;
+        }
+        else if (velocity.x < -MAX_HOVERBOARD_SPEED) {
+          velocity.x += HOVERBOARD_SPEED/2;
+        }
+      }
       if(isOnCeiling())
       {
         velocity.y += JUMP_CANCEL_POWER;
