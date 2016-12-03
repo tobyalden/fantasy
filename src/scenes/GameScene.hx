@@ -1,6 +1,7 @@
 package scenes;
 
 import com.haxepunk.*;
+import com.haxepunk.utils.*;
 import com.haxepunk.graphics.*;
 import com.haxepunk.tmx.TmxMap;
 import entities.*;
@@ -30,6 +31,9 @@ class GameScene extends Scene
     {
       super.update();
       Timer.updateAll();
+      if(Input.check(Key.P)) {
+        HXP.engine.scene = new GameScene();
+      }
     }
 
 }
